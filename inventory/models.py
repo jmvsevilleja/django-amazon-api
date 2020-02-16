@@ -5,6 +5,6 @@ from django.db import models
 
 class Inventory(models.Model):
     productId = models.CharField(max_length=40, unique=True)
-    bufferLevel = models.IntegerField()
-    leadTime = models.IntegerField()
+    bufferLevel = models.IntegerField(null=True)
+    leadTime = models.IntegerField(null=True)
     comment = models.TextField(blank=True)

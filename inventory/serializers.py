@@ -8,7 +8,7 @@ class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
         fields = '__all__'
-        # fields = ('id', 'username', 'first_name', 'last_name', 'email')
+        #fields = ('id', 'productId')
 
         # email = serializers.EmailField()
         # username = serializers.CharField(max_length=100)
