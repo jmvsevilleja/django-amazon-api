@@ -89,9 +89,9 @@ class TransactionResource(resources.ModelResource):
 
 class TransactionAdmin(ImportExportModelAdmin):
 
-    list_display = ('date_time', 'settlement_id', 'type', 'order_id', 'sku', 'description', 'quantity', 'product_sales',
+    list_display = ('order_id', 'date_time', 'settlement_id', 'type',  'sku', 'description', 'quantity', 'product_sales',
                     'total')
-    # search_fields = ['sku']
+    search_fields = ['order_id']
     resource_class = TransactionResource
 
     def get_ordering(self, request):
