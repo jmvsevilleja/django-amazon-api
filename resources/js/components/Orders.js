@@ -35,7 +35,7 @@ export default function Orders() {
   const classes = useStyles();
   return (
     <React.Fragment>
-      <Title>Inventory</Title>
+      <Title>Inventories</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
