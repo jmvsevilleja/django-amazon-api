@@ -30,7 +30,7 @@ export default function Orders() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   useEffect(() => {
     const GetData = async () => {
-      const result = await axios('http://127.0.0.1:8000/api/transaction/?types=Order');
+      const result = await axios('https://django-amazon-api.herokuapp.com/api/transaction/?types=Order');
       setData(result.data);
     }
     GetData();
