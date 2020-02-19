@@ -90,7 +90,7 @@ export default function Orders(props) {
 
       const fromDate = new Date(result.data[0].date_time);
       const toDate = new Date(result.data.slice(-1)[0].date_time);
-      toDate.setDate(toDate.getDate() - 1);
+      // toDate.setDate(toDate.getDate() - 1);
 
       const months = [
         { 'month': 'January', 'total': 200 },
