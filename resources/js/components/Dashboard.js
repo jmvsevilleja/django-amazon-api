@@ -123,17 +123,19 @@ export default function Dashboard() {
   const [totalSale, setTotalSale] = React.useState(0);
   const [fromDate, setFromDate] = React.useState('');
   const [toDate, setToDate] = React.useState('');
+  const [ofSku, setOfSku] = React.useState('');
   const [monthChart, setMonthChart] = React.useState([]);
 
-  const handleTotalSale = (total, from, to) => {
-    console.log(total)
+  const handleTotalSale = (total, from, to, sku) => {
     setTotalSale(total);
     setFromDate(from);
     setToDate(to);
+    setOfSku(sku)
   };
 
-  const handleMonthChart = (month) => {
+  const handleMonthChart = (month, sku) => {
     setMonthChart(month);
+    setOfSku(sku)
   };
 
   const handleDrawerOpen = () => {
@@ -194,6 +196,7 @@ export default function Dashboard() {
               <Paper className={fixedHeightPaper}>
                 <Chart
                   monthChart={monthChart}
+                  ofSku={ofSku}
                 />
               </Paper>
             </Grid>
@@ -204,6 +207,7 @@ export default function Dashboard() {
                   totalSale={totalSale}
                   fromDate={fromDate}
                   toDate={toDate}
+                  ofSku={ofSku}
                 />
               </Paper>
             </Grid>

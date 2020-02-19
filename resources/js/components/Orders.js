@@ -38,7 +38,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
 export default function Orders(props) {
 
   const classes = useStyles();
@@ -72,7 +71,6 @@ export default function Orders(props) {
     setTo(event.target.value);
   };
 
-
   const handleFilterSubmit = event => {
     const GetData = async () => {
 
@@ -81,28 +79,42 @@ export default function Orders(props) {
 
       const searchUrl = `${domainUrl}/api/transaction/?types=Order&from_date=${from}&to_date=${to}&sku=${sku}`;
       const result = await axios(searchUrl);
+
+      var totalSale = 0;
+      var fromDateText = '';
+      var toDateText = '';
+      var monthDataAll = [];
+      var monthData = [];
+      var total = 0;
+
+      if (result.data.length) {
+
+        result.data.map(row => {
+          totalSale += parseInt(row.total);
+          const month = new Date(result.data[0].date_time).toLocaleDateString("en-US", { month: 'long' });
+          total = parseInt(row.total);
+          monthDataAll.push({ month, total })
+        });
+
+        fromDateText = new Date(result.data[0].date_time).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+        toDateText = new Date(result.data.slice(-1)[0].date_time).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+        // toDate.setDate(toDate.getDate() - 1);
+
+        // Group Months
+        monthDataAll.reduce(function (res, value) {
+          if (!res[value.month]) {
+            res[value.month] = { month: value.month, total: 0 };
+            monthData.push(res[value.month])
+          }
+          res[value.month].total += value.total;
+          return res;
+        }, {});
+
+      }
+
+      props.onUpdateTotalSale(totalSale, fromDateText, toDateText, sku);
+      props.onUpdateMonthChart(monthData, sku);
       setData(result.data);
-
-      var totalSales = 0;
-      result.data.map(row => {
-        totalSales += row.total * 1;
-      });
-
-      const fromDate = new Date(result.data[0].date_time);
-      const toDate = new Date(result.data.slice(-1)[0].date_time);
-      // toDate.setDate(toDate.getDate() - 1);
-
-      const months = [
-        { 'month': 'January', 'total': 200 },
-        { 'month': 'February', 'total': 300 },
-        { 'month': 'March', 'total': 800 },
-        { 'month': 'April', 'total': 400 },
-        { 'month': 'May', 'total': 600 },
-      ];
-
-      props.onUpdateTotalSale(totalSales, fromDate.toLocaleDateString(), toDate.toLocaleDateString());
-      props.onUpdateMonthChart(months);
-
     }
     GetData();
   };
