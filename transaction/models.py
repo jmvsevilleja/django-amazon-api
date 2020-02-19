@@ -7,7 +7,7 @@ class Transaction(models.Model):
 
     date_time = models.DateTimeField(blank=True, null=True)
     settlement_id = models.CharField(max_length=11, null=True)
-    type = models.CharField(max_length=50, null=True)
+    types = models.CharField(max_length=50, null=True)
     order_id = models.CharField(max_length=19, null=True)
     sku = models.CharField(max_length=12, null=True)
     description = models.TextField(null=True)

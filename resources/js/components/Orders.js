@@ -5,21 +5,12 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
-
+import axios from 'axios';
+import { useState, useEffect } from 'react'
 // Generate Order Data
-function createData(id, a, b, c, d, e, f, g, h, i) {
-  return { id, a, b, c, d, e, f, g, h, i };
-}
-
-const rows = [
-  createData(0, 'Jewelry Blue Color', 213, 35, '$ 34.00', 3.44, 5, 'No', 'No', 'Todo'),
-  createData(1, 'Christmas Packaging Jewelry', 434, 34, '$ 35.00', 4.99, 2, 'No', 'Yes', 'Todo'),
-  createData(2, 'Red Jewellery', 6, 54, '$ 52.00', 6.81, 5, 'Yes', 'Soon', 'Todo'),
-  createData(3, 'Paper Jewelry Earring', 3, 5, '$ 23.00', 3.39, 1, 'No', 'No', 'Todo'),
-  createData(4, 'Square Shape Jewelry Earrings', 3, 6, '$ 33.00', 5.79, 0, 'No', 'Soon', 'Todo'),
-];
 
 function preventDefault(event) {
   event.preventDefault();
@@ -33,44 +24,70 @@ const useStyles = makeStyles(theme => ({
 
 export default function Orders() {
   const classes = useStyles();
+
+  const [page, setPage] = React.useState(0);
+  const [data, setData] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  useEffect(() => {
+    const GetData = async () => {
+      const result = await axios('http://127.0.0.1:8000/api/transaction/?types=Order');
+      setData(result.data);
+    }
+    GetData();
+  }, []);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
   return (
     <React.Fragment>
-      <Title>Inventories</Title>
-      <Table size="small">
+      <Title>Orders</Title>
+      <Table stickyHeader aria-label="sticky table">
         <TableHead>
           <TableRow>
-            <TableCell>Product</TableCell>
-            <TableCell>FBA stock</TableCell>
-            <TableCell>Reserved</TableCell>
-            <TableCell>Stock value</TableCell>
-            <TableCell>Estimated sales velocity</TableCell>
-            <TableCell>Days of stock left</TableCell>
-            <TableCell>Running out of stock</TableCell>
-            <TableCell>Time to reorder</TableCell>
-            <TableCell align="right">Todo</TableCell>
+            <TableCell>Order ID</TableCell>
+            <TableCell align="center">Settlement ID</TableCell>
+            <TableCell align="center">SKU</TableCell>
+            <TableCell align="left">Description</TableCell>
+            <TableCell align="right">Quantity</TableCell>
+            <TableCell align="right">Product Sales</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <TableRow key={row.id}>
-              <TableCell>{row.a}</TableCell>
-              <TableCell>{row.b}</TableCell>
-              <TableCell>{row.c}</TableCell>
-              <TableCell>{row.d}</TableCell>
-              <TableCell align="right">{row.e}</TableCell>
-              <TableCell>{row.f}</TableCell>
-              <TableCell>{row.g}</TableCell>
-              <TableCell>{row.h}</TableCell>
-              <TableCell>{row.i}</TableCell>
-            </TableRow>
-          ))}
+          {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
+            return (
+              <React.Fragment key={row.id}>
+                <TableRow >
+                  <TableCell component="th" scope="row">
+                    {row.order_id}
+                  </TableCell>
+                  <TableCell align="center">{row.settlement_id}</TableCell>
+                  <TableCell align="center">{row.sku}</TableCell>
+                  <TableCell align="left">{row.description}</TableCell>
+                  <TableCell align="right">{row.quantity}</TableCell>
+                  <TableCell align="right">{row.product_sales}</TableCell>
+                </TableRow>
+              </React.Fragment>
+
+            );
+          })}
         </TableBody>
       </Table>
-      <div className={classes.seeMore}>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          See more products
-        </Link>
-      </div>
+
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 15]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
     </React.Fragment>
   );
 }
