@@ -54,19 +54,6 @@ class CustomDateTimeWidget(widgets.DateTimeWidget):
 
         raise ValueError("Enter a valid date/time.")
 
-        # ET = tz.gettz('US/Eastern')
-        # CT = tz.gettz('US/Central')
-        # MT = tz.gettz('US/Mountain')
-        # PT = tz.gettz('US/Pacific')
-
-        # us_tzinfos = {'CST': CT, 'CDT': CT,
-        #               'EST': ET, 'EDT': ET,
-        #               'MST': MT, 'MDT': MT,
-        #               'PST': PT, 'PDT': PT}
-
-        # try:
-        #     dt = parse(value, tzinfos=us_tzinfos)
-
 
 class TransactionResource(resources.ModelResource):
 

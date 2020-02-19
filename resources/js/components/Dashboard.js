@@ -120,6 +120,22 @@ const useStyles = makeStyles(theme => ({
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [totalSale, setTotalSale] = React.useState(0);
+  const [fromDate, setFromDate] = React.useState('');
+  const [toDate, setToDate] = React.useState('');
+  const [monthChart, setMonthChart] = React.useState([]);
+
+  const handleTotalSale = (total, from, to) => {
+    console.log(total)
+    setTotalSale(total);
+    setFromDate(from);
+    setToDate(to);
+  };
+
+  const handleMonthChart = (month) => {
+    setMonthChart(month);
+  };
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -176,19 +192,28 @@ export default function Dashboard() {
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
-                <Chart />
+                <Chart
+                  monthChart={monthChart}
+                />
               </Paper>
             </Grid>
             {/* Recent Deposits */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <Deposits />
+                <Deposits
+                  totalSale={totalSale}
+                  fromDate={fromDate}
+                  toDate={toDate}
+                />
               </Paper>
             </Grid>
             {/* Recent Orders */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders />
+                <Orders
+                  onUpdateTotalSale={handleTotalSale}
+                  onUpdateMonthChart={handleMonthChart}
+                />
               </Paper>
             </Grid>
           </Grid>

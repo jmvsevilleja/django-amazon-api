@@ -19,9 +19,9 @@ import axios from 'axios';
 import { useState, useEffect } from 'react'
 // Generate Order Data
 
-function preventDefault(event) {
-  event.preventDefault();
-}
+// function preventDefault(event) {
+//   event.preventDefault();
+// }
 
 const useStyles = makeStyles(theme => ({
   seeMore: {
@@ -39,25 +39,19 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function Orders() {
+export default function Orders(props) {
+
   const classes = useStyles();
 
-  const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
-
-  const handleDateChange = date => {
-    setSelectedDate(date);
-  };
   const [page, setPage] = React.useState(0);
   const [data, setData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  useEffect(() => {
-    const GetData = async () => {
-      const result = await axios('https://django-amazon-api.herokuapp.com/api/transaction/?types=Order');
-      console.log(result.data)
-      setData(result.data);
-    }
-    GetData();
-  }, []);
+
+  const [sku, setSku] = React.useState('');
+  const [from, setFrom] = React.useState('');
+  const [to, setTo] = React.useState('');
+
+  // Pagination
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -66,6 +60,56 @@ export default function Orders() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  // Filter
+  const handleSkuChange = event => {
+    setSku(event.target.value);
+  };
+  const handleFromChange = event => {
+    setFrom(event.target.value);
+  };
+  const handleToChange = event => {
+    setTo(event.target.value);
+  };
+
+
+  const handleFilterSubmit = event => {
+    const GetData = async () => {
+
+      // const domainUrl = 'http://127.0.0.1:8000';
+      const domainUrl = 'https://django-amazon-api.herokuapp.com';
+
+      const searchUrl = `${domainUrl}/api/transaction/?types=Order&from_date=${from}&to_date=${to}&sku=${sku}`;
+      const result = await axios(searchUrl);
+      setData(result.data);
+
+      var totalSales = 0;
+      result.data.map(row => {
+        totalSales += row.total * 1;
+      });
+
+      const fromDate = new Date(result.data[0].date_time);
+      const toDate = new Date(result.data.slice(-1)[0].date_time);
+      toDate.setDate(toDate.getDate() - 1);
+
+      const months = [
+        { 'month': 'January', 'total': 200 },
+        { 'month': 'February', 'total': 300 },
+        { 'month': 'March', 'total': 800 },
+        { 'month': 'April', 'total': 400 },
+        { 'month': 'May', 'total': 600 },
+      ];
+
+      props.onUpdateTotalSale(totalSales, fromDate.toLocaleDateString(), toDate.toLocaleDateString());
+      props.onUpdateMonthChart(months);
+
+    }
+    GetData();
+  };
+
+  useEffect(() => {
+    handleFilterSubmit();
+  }, []);
 
   return (
     <React.Fragment>
@@ -81,17 +125,19 @@ export default function Orders() {
               id="sku"
               label="SKU"
               type="text"
-              defaultValue=""
+              defaultValue={sku}
+              onChange={handleSkuChange}
               className={classes.textField}
               InputLabelProps={{
                 shrink: true,
               }}
             />
-
             <TextField
               id="from"
               label="From"
               type="date"
+              defaultValue={from}
+              onChange={handleFromChange}
               className={classes.textField}
               InputLabelProps={{
                 shrink: true,
@@ -101,6 +147,8 @@ export default function Orders() {
               id="to"
               label="To"
               type="date"
+              defaultValue={to}
+              onChange={handleToChange}
               className={classes.textField}
               InputLabelProps={{
                 shrink: true,
@@ -111,6 +159,7 @@ export default function Orders() {
               color="primary"
               className={classes.filter}
               startIcon={<FilterListIcon />}
+              onClick={handleFilterSubmit}
             >
               Filter
             </Button>

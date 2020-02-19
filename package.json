@@ -42,6 +42,7 @@
         "@material-ui/icons": "^4.5.1",
         "axios": "^0.19.2",
         "material-dashboard-react": "^1.8.0",
+        "react-number-format": "^4.3.1",
         "recharts": "^2.0.0-beta.1"
     }
 }

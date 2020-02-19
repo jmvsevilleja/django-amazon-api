@@ -3,30 +3,14 @@ import { useTheme } from '@material-ui/core/styles';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Label, ResponsiveContainer } from 'recharts';
 import Title from './Title';
 
-// Generate Sales Data
-function createData(month, amount) {
-  return { month, amount };
-}
-
-const data = [
-  createData('January', 0),
-  createData('February', 300),
-  createData('March', 600),
-  createData('April', 800),
-  createData('May', 1500),
-];
-
-
-
-export default function Chart() {
+export default function Chart(props) {
   const theme = useTheme();
-
   return (
     <React.Fragment>
       <Title>Monthly Sales</Title>
       <ResponsiveContainer>
         <LineChart
-          data={data}
+          data={props.monthChart}
           margin={{
             top: 16,
             right: 16,
@@ -36,7 +20,6 @@ export default function Chart() {
 
         >
           <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-
 
           <YAxis stroke={theme.palette.text.secondary}>
             <Label
@@ -48,7 +31,7 @@ export default function Chart() {
           </YAxis>
 
           <Tooltip />
-          <Line type="monotone" dataKey="amount" stroke={theme.palette.primary.main} dot={true} />
+          <Line type="monotone" dataKey="total" stroke={theme.palette.primary.main} dot={true} />
           <XAxis dataKey="month" stroke={theme.palette.text.secondary} />
         </LineChart>
       </ResponsiveContainer>
