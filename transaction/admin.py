@@ -62,6 +62,7 @@ class TransactionResource(resources.ModelResource):
     settlement_id = fields.Field(
         column_name='settlement id', attribute='settlement_id')
     order_id = fields.Field(column_name='order id', attribute='order_id')
+    types = fields.Field(column_name='type', attribute='types')
     product_sales = fields.Field(
         column_name='product sales', attribute='product_sales', widget=CustomDecimalWidget())
     total = fields.Field(column_name='total',
