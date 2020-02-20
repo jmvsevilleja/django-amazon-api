@@ -53,8 +53,8 @@ function stableSort(array, comparator) {
 const headCells = [
   { id: 'order_id', numeric: false, disablePadding: false, label: 'Order ID' },
   { id: 'date_time', numeric: false, disablePadding: false, label: 'Date' },
+  { id: 'settlement_id', numeric: false, disablePadding: false, label: 'Settlement ID' },
   { id: 'sku', numeric: false, disablePadding: false, label: 'SKU' },
-  { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
   { id: 'quantity', numeric: true, disablePadding: false, label: 'Quantity' },
   { id: 'product_sales', numeric: true, disablePadding: false, label: 'Product Sales' },
 ];
@@ -239,8 +239,8 @@ export default function Orders(props) {
   const handleFilterSubmit = event => {
     const GetData = async () => {
 
-      // const domainUrl = 'http://127.0.0.1:8000';
-      const domainUrl = 'https://django-amazon-api.herokuapp.com';
+      const domainUrl = 'http://127.0.0.1:8000';
+      // const domainUrl = 'https://django-amazon-api.herokuapp.com';
 
       const searchUrl = `${domainUrl}/api/transaction/?types=Order&from_date=${from}&to_date=${to}&sku=${sku}`;
       const result = await axios(searchUrl);
@@ -295,11 +295,10 @@ export default function Orders(props) {
   return (
     <React.Fragment>
       <Grid container>
-        <Grid item xs>
+        <Grid item xs={12} sm={4}>
           <Title>Orders</Title>
         </Grid>
-
-        <Grid item xs >
+        <Grid item xs={12} sm={8}>
           <Grid container alignItems="flex-start" justify="flex-end" direction="row" className={classes.grid}>
             <TextField
               id="sku"
@@ -361,20 +360,15 @@ export default function Orders(props) {
           {stableSort(data, getComparator(order, orderBy))
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row, index) => {
-              const isItemSelected = isSelected(row.name);
-              const labelId = `enhanced-table-checkbox-${index}`;
-
               return (
                 <React.Fragment key={row.id}>
                   <TableRow >
                     <TableCell component="th" scope="row">
                       {row.order_id}
                     </TableCell>
-                    <TableCell align="center">{new Date(row.date_time).toLocaleDateString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC' })}</TableCell>
-                    <TableCell align="center">{row.sku}</TableCell>
-                    <TableCell align="left" >
-                      {row.description}
-                    </TableCell>
+                    <TableCell align="left">{new Date(row.date_time).toLocaleDateString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC' })}</TableCell>
+                    <TableCell align="left" >{row.settlement_id}</TableCell>
+                    <TableCell align="left">{row.sku}</TableCell>
                     <TableCell align="right">{row.quantity}</TableCell>
                     <TableCell align="right">{row.product_sales}</TableCell>
                   </TableRow>
