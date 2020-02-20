@@ -52,7 +52,7 @@ function stableSort(array, comparator) {
 
 const headCells = [
   { id: 'order_id', numeric: false, disablePadding: false, label: 'Order ID' },
-  { id: 'settlement_id', numeric: true, disablePadding: false, label: 'Settlement ID' },
+  { id: 'date_time', numeric: false, disablePadding: false, label: 'Date' },
   { id: 'sku', numeric: false, disablePadding: false, label: 'SKU' },
   { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
   { id: 'quantity', numeric: true, disablePadding: false, label: 'Quantity' },
@@ -256,15 +256,18 @@ export default function Orders(props) {
 
         result.data.map(row => {
           totalSale += parseInt(row.total);
-          const month = new Date(result.data[0].date_time).toLocaleDateString("en-US", { month: 'long' });
+          const month = new Date(row.date_time)
+            .toLocaleDateString("en-US", { month: 'long', timeZone: 'UTC' });
           total = parseInt(row.total);
           monthDataAll.push({ month, total })
         });
 
-        fromDateText = new Date(result.data[0].date_time).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+        fromDateText = new Date(result.data[0].date_time)
+          .toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
         const toDate = new Date(result.data.slice(-1)[0].date_time);
-        toDate.setDate(toDate.getDate() - 1);
-        toDateText = toDate.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+        //toDate.setDate(toDate.getDate() - 1);
+        toDateText = toDate
+          .toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 
         // Group Months
         monthDataAll.reduce(function (res, value) {
@@ -277,7 +280,7 @@ export default function Orders(props) {
         }, {});
 
       }
-
+      console.log(monthDataAll)
       props.onUpdateTotalSale(totalSale, fromDateText, toDateText, sku);
       props.onUpdateMonthChart(monthData, sku);
       setData(result.data);
@@ -364,10 +367,10 @@ export default function Orders(props) {
               return (
                 <React.Fragment key={row.id}>
                   <TableRow >
-                    <TableCell component="th" scope="row" title={row.date_time}>
+                    <TableCell component="th" scope="row">
                       {row.order_id}
                     </TableCell>
-                    <TableCell align="center">{row.settlement_id}</TableCell>
+                    <TableCell align="center">{new Date(row.date_time).toLocaleDateString("en-US", { year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC' })}</TableCell>
                     <TableCell align="center">{row.sku}</TableCell>
                     <TableCell align="left" >
                       {row.description}

@@ -36,9 +36,11 @@ class TransactionFilter(FilterSet):
     def filter_by_to_date(self, queryset, name, value):
 
         to_date = datetime.strptime(value, "%Y-%m-%d") + timedelta(hours=24)
+
         to_date = to_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+
         print(to_date)
-        queryset = queryset.filter(date_time__lte=to_date)
+        queryset = queryset.filter(date_time__lt=to_date)
         return queryset
 
 
