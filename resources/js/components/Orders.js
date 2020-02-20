@@ -280,7 +280,6 @@ export default function Orders(props) {
         }, {});
 
       }
-      console.log(monthDataAll)
       props.onUpdateTotalSale(totalSale, fromDateText, toDateText, sku);
       props.onUpdateMonthChart(monthData, sku);
       setData(result.data);

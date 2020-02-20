@@ -45,8 +45,8 @@ class TransactionFilter(FilterSet):
 class TransactionView(viewsets.ModelViewSet):
     serializer_class = TransactionSerializer
     queryset = Transaction.objects.all()
-    filter_backends = (DjangoFilterBackend, SearchFilter)  # OrderingFilter,
-    # ordering_fields = ('product_sales', 'total')
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    # ordering_fields = ('date_time')
     # search_fields = ('order_id')
-    ordering = ('-date_time')
+    ordering = ('date_time')
     filter_class = TransactionFilter
