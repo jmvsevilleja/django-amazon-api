@@ -239,8 +239,8 @@ export default function Orders(props) {
   const handleFilterSubmit = event => {
     const GetData = async () => {
 
-      const domainUrl = 'http://127.0.0.1:8000';
-      // const domainUrl = 'https://django-amazon-api.herokuapp.com';
+      // const domainUrl = 'http://127.0.0.1:8000';
+      const domainUrl = 'https://django-amazon-api.herokuapp.com';
 
       const searchUrl = `${domainUrl}/api/transaction/?types=Order&from_date=${from}&to_date=${to}&sku=${sku}`;
       const result = await axios(searchUrl);
