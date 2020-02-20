@@ -262,8 +262,9 @@ export default function Orders(props) {
         });
 
         fromDateText = new Date(result.data[0].date_time).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-        toDateText = new Date(result.data.slice(-1)[0].date_time).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-        // toDate.setDate(toDate.getDate() - 1);
+        const toDate = new Date(result.data.slice(-1)[0].date_time);
+        toDate.setDate(toDate.getDate() - 1);
+        toDateText = toDate.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
 
         // Group Months
         monthDataAll.reduce(function (res, value) {
