@@ -15,6 +15,8 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import Title from './Title';
 import axios from 'axios';
 import { useState, useEffect } from 'react'
@@ -121,7 +123,7 @@ const useToolbarStyles = makeStyles(theme => ({
       },
   title: {
     flex: '1 1 100%',
-  },
+  }
 }));
 
 const useStyles = makeStyles(theme => ({
@@ -165,6 +167,7 @@ export default function Orders(props) {
   const classes = useStyles();
 
   const [page, setPage] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
   const [data, setData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -211,8 +214,6 @@ export default function Orders(props) {
     setSelected(newSelected);
   };
 
-  const isSelected = name => selected.indexOf(name) !== -1;
-
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
   // Pagination
@@ -239,6 +240,8 @@ export default function Orders(props) {
   const handleFilterSubmit = event => {
     const GetData = async () => {
 
+      setLoading(true);
+
       // const domainUrl = 'http://127.0.0.1:8000';
       const domainUrl = 'https://django-amazon-api.herokuapp.com';
 
@@ -257,7 +260,7 @@ export default function Orders(props) {
         result.data.map(row => {
           totalSale += parseInt(row.total);
           const month = new Date(row.date_time)
-            .toLocaleDateString("en-US", { month: 'long', timeZone: 'UTC' });
+            .toLocaleDateString("en-US", { month: 'short', timeZone: 'UTC' });
           total = parseInt(row.total);
           monthDataAll.push({ month, total })
         });
@@ -283,6 +286,7 @@ export default function Orders(props) {
       props.onUpdateTotalSale(totalSale, fromDateText, toDateText, sku);
       props.onUpdateMonthChart(monthData, sku);
       setData(result.data);
+      setLoading(false);
     }
     GetData();
   };
@@ -346,6 +350,7 @@ export default function Orders(props) {
 
       </Grid>
       <Table stickyHeader aria-label="sticky table" size='small'>
+
         <EnhancedTableHead
           classes={classes}
           numSelected={selected.length}
@@ -355,8 +360,9 @@ export default function Orders(props) {
           onRequestSort={handleRequestSort}
           rowCount={data.length}
         />
+
         <TableBody>
-          {stableSort(data, getComparator(order, orderBy))
+          {loading == false && stableSort(data, getComparator(order, orderBy))
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row, index) => {
               return (
@@ -374,9 +380,14 @@ export default function Orders(props) {
                 </React.Fragment>
               );
             })}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: (33) * emptyRows }}>
-              <TableCell colSpan={6} />
+          {loading == false && emptyRows > 0 && (
+            <TableRow style={{ height: (33) * rowsPerPage }}>
+              <TableCell colSpan={6} align="center">No records found</TableCell>
+            </TableRow>
+          )}
+          {loading == true && (
+            <TableRow style={{ height: (33) * rowsPerPage }}>
+              <TableCell colSpan={6} align="center"><CircularProgress /></TableCell>
             </TableRow>
           )}
         </TableBody>
